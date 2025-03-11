@@ -22,7 +22,9 @@ shared_data = {"img": Image.new('RGB', (IMG_WIDTH, IMG_HEIGHT), color='blue'),
                 "author": "Author",
                 "track": "Track"}
 
-button = Button(2)
+play_button = Button(2)
+next_button = Button(3)
+previous_button = Button(4)
 
 class MediaPlayer:
     """Handles interactions with the Bluetooth media player."""
@@ -80,15 +82,23 @@ class Listener(threading.Thread):
                     shared_data["track"] = track
                 
                 def play_pause():
-                
                     if status == 'playing':
                         handle.Pause()
                         
                     if status == 'paused':
                         handle.Play()
+                
+                def next_track():
+                    handle.Next()
+                    print("next track")
+                    
+                def previous_track():
+                    handle.Previous()
                         
                 
-                button.when_pressed = play_pause
+                play_button.when_pressed = play_pause
+                next_button.when_pressed = next_track
+                previous_button.when_pressed = previous_track
                 
             except MediaPlayer.DeviceNotFoundError as e:
                 print(e)
