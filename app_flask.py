@@ -4,7 +4,9 @@ from flask import Flask, Response
 from PIL import Image, ImageDraw
 import time
 from pydbus import SystemBus
-from cover_fetcher import fetch, display  
+from cover_fetcher import fetch, display
+from gpiozero import Button
+from signal import pause
 
 # Flask app setup
 app = Flask(__name__)
@@ -19,6 +21,8 @@ lock = threading.Lock()
 shared_data = {"img": Image.new('RGB', (IMG_WIDTH, IMG_HEIGHT), color='blue'),
                 "author": "Author",
                 "track": "Track"}
+
+button = Button(2)
 
 class MediaPlayer:
     """Handles interactions with the Bluetooth media player."""
@@ -53,6 +57,8 @@ class Listener(threading.Thread):
             try:
                 handle = MediaPlayer.get_handle()
                 metadata = handle.Track
+                
+                status = handle.Status
 
                 author = metadata.get('Artist', 'Unknown Artist')
                 title = metadata.get('Album', 'Unknown Album')
@@ -72,7 +78,18 @@ class Listener(threading.Thread):
                     shared_data["img"] = img
                     shared_data["author"] = author
                     shared_data["track"] = track
-
+                
+                def play_pause():
+                
+                    if status == 'playing':
+                        handle.Pause()
+                        
+                    if status == 'paused':
+                        handle.Play()
+                        
+                
+                button.when_pressed = play_pause
+                
             except MediaPlayer.DeviceNotFoundError as e:
                 print(e)
                 time.sleep(self.interval)
@@ -81,6 +98,7 @@ class Listener(threading.Thread):
             finally:
                 time.sleep(self.interval)
 
+        
 @app.route('/metadata')
 def metadata():
     """Returns the current author and track metadata."""
@@ -232,6 +250,9 @@ if __name__ == '__main__':
 
     listener_thread = Listener(interval=UPDATE_INTERVAL)
     listener_thread.start()
+    
+    #button_thread = Button_listener()
+    #button_thread.start()
 
     flask_thread.join()
 
