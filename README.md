@@ -68,23 +68,6 @@ Handles fetching album cover images from the Last.fm API.
 
 ---
 
-## Usage
-- **Bluetooth Streaming**: Pair your Bluetooth device with the Raspberry Pi and start streaming music.
-- **Web Interface**: View the current track and album cover in the browser.
-- **Playback Controls**: Use the physical buttons connected to the Raspberry Pi to play/pause, skip to the next track, or go to the previous track.
-
----
-
-## Troubleshooting
-- **No Album Cover Displayed**:
-  - Ensure the Last.fm API credentials are correct.
-  - Check the network connection for the Raspberry Pi.
-- **Buttons Not Working**:
-  - Verify the GPIO pins are correctly connected.
-  - Check the button configuration in `app_flask.py`.
-
----
-
 ## References
 [1] [Guide to turn the Pi into a Bluetooth receiver](https://forums.raspberrypi.com/viewtopic.php?t=235519&sid=ab884d8fc6855ef9906ca276cbf843ae)  
 [2] [Handle DBUS with pydbus](https://stackoverflow.com/questions/74657226/receiving-audio-data-and-metadata-from-iphone-over-bluetooth-python)  
@@ -93,4 +76,3 @@ Handles fetching album cover images from the Last.fm API.
 ## Next Features to implement
 * Potentiometer to change volume
 * Digital touch buttons on screen
-```
