@@ -1,4 +1,3 @@
-```markdown
 # MediaPiler
 Music player via Bluetooth and Raspberry Pi
 
