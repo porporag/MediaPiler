@@ -83,17 +83,30 @@ class Listener(threading.Thread):
                 
                 def play_pause():
                     if status == 'playing':
-                        handle.Pause()
+                        try:
+                            handle.Pause()
+                        except Exception as e:
+                            print(f"Error pausing: {e}")
                         
                     if status == 'paused':
-                        handle.Play()
+                        try:
+                            handle.Play()
+                        except Exception as e:
+                            print(f"Error playing: {e}")
                 
                 def next_track():
-                    handle.Next()
-                    print("next track")
+                    try:
+                        handle.Next()
+                        print("next track")
+                    except Exception as e:
+                        print(f"Error playing next track: {e}")
                     
                 def previous_track():
-                    handle.Previous()
+                    try:
+                        handle.Previous()
+                        print("previous track")
+                    except Exception as e:
+                        print(f"Error playing previous track: {e}")
                         
                 
                 play_button.when_pressed = play_pause
@@ -218,14 +231,21 @@ def home():
 
                 <script>
                     async function updateMetadata() {
-                        try {
-                            const response = await fetch('/metadata');
-                            const metadata = await response.json();
-                            document.getElementById('track-info').innerText = metadata.track || 'Unknown Track';
-                            document.getElementById('author-info').innerText = metadata.author || 'Unknown Author';
-                        } catch (error) {
-                            console.error('Error fetching metadata:', error);
+                    try {
+                        const response = await fetch('/metadata');
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
                         }
+                        const metadata = await response.json();
+                        document.getElementById('track-info').innerText = metadata.track || 'Unknown Track';
+                        document.getElementById('author-info').innerText = metadata.author || 'Unknown Author';
+                    } catch (error) {
+                        console.error('Error fetching metadata:', error);
+                        // Display an error message to the user
+                        document.getElementById('track-info').style.color = 'red';
+                        document.getElementById('track-info').innerText = 'Failed to fetch metadata!';
+                        document.getElementById('author-info').style.color = '';
+                    }
                     }
 
                     // Refresh metadata every 5 seconds
